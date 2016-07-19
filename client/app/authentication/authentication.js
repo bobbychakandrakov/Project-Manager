@@ -17,6 +17,8 @@
     };
 
     $scope.login = login;
+    
+    $scope.register = register;
 
     function login() {
       console.log($scope.user);
@@ -26,16 +28,14 @@
         console.log(err);
       });
     }
-    
+
     function register() {
       authenticationService.register($scope.user).then(function (data) {
         console.log(data);
       }, function (err) {
         console.log(err);
-      })
+      });
     }
-
-    $scope.register = register;
 
   }
 

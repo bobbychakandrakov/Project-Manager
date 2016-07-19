@@ -25,7 +25,7 @@
                 url: 'http://localhost:7777/api/login',
                 data: 'email=' + credentials.email + '&password=' + credentials.password
             }).success(function (data) {
-                console.log("pls");
+                console.log('Login success!');
             }).error(function (err) {
                 console.log(err);
             });

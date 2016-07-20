@@ -7,7 +7,7 @@
     .controller('NavbarController', NavbarController);
 
   navbar.$inject = ['$location', '$rootScope', '$interval'];
-  NavbarController.$inject = ['$scope','$location', '$rootScope'];
+  NavbarController.$inject = ['$scope','$location', '$rootScope','authenticationService','toastr'];
 
   function navbar($location, $rootScope, $interval){
     // Usage: ...
@@ -27,13 +27,25 @@
     }
   }
 
-  function NavbarController($scope, $location, $rootScope) {
+  function NavbarController($scope, $location, $rootScope, authenticationService, toastr) {
     $scope.showNavbar = showNavbar;
+    $scope.logout = logout;
+    $scope.isActive = isActive;
     function showNavbar() {
       if ($location.path() === '/') {
         return false;
       }
       return true;
+    }
+    function isActive(path) {
+      if ($location.path() === path) {
+        return true;
+      }
+      return false;
+    }
+    function logout() {
+      authenticationService.logout();
+      toastr.success("Successful logout!");
     }
   }
 

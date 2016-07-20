@@ -26,7 +26,6 @@
     $scope.register = register;
 
     function login() {
-      console.log($scope.loginUser);
       authenticationService.login($scope.loginUser).then(function (data) {
         $location.path('/dashboard');
       },function (err) {

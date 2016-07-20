@@ -3,8 +3,10 @@
 
   angular.module('projectManager', [
     'ngRoute',
+    'ngCookies',
     'projectManager.authentication',
-    'projectManager.dashboard'
+    'projectManager.dashboard',
+    'projectManager.editProfile'
   ])
   .config(function ($routeProvider, $locationProvider) {
 
@@ -20,6 +22,7 @@
     })
     .otherwise({redirectTo:'/'});
   })
+  .value('toastr', toastr)
   .constant('BASE_URL','http://localhost:7777/api')
   .constant('CONTENT_TYPE', 'application/x-www-form-urlencoded; charset=UTF-8');
 

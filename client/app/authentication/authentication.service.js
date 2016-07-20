@@ -5,13 +5,14 @@
         .module('projectManager.authentication')
         .factory('authenticationService', authenticationService);
 
-    authenticationService.$inject = ['$http', 'BASE_URL', 'CONTENT_TYPE', '$rootScope'];
+    authenticationService.$inject = ['$http', 'BASE_URL', 'CONTENT_TYPE', '$rootScope', '$cookies'];
 
-    function authenticationService($http, BASE_URL , CONTENT_TYPE, $rootScope) {
+    function authenticationService($http, BASE_URL , CONTENT_TYPE, $rootScope, $cookies) {
 
         var service = {
             login: login,
-            register: register
+            register: register,
+            logout:logout
         };
 
         return service;
@@ -25,8 +26,7 @@
                 url: BASE_URL + '/login',
                 data: 'email=' + credentials.email + '&password=' + credentials.password
             }).success(function (data) {
-                $rootScope.name = data.name;
-                console.log('Login success!');
+                $cookies.put('token',data.token);
             }).error(function (err) {
                 console.log(err);
             });
@@ -47,6 +47,11 @@
             }).error(function (err) {
                 console.log(err);
             });
+        }
+
+        function logout() {
+          $cookies.remove('token');
+          console.log('Logout success!');
         }
 
     }

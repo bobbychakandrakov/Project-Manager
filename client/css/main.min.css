@@ -129,6 +129,10 @@
 	}
 }
 
+.footer{
+	background-color: #dddfe6;
+}
+
 .navbar-inverse{
 	background-color: #dddfe6;
 	border-color: #dddfe6;
@@ -144,4 +148,22 @@
 
 .navbar-inverse .navbar-nav > li > a , .navbar-inverse .navbar-brand{
 	color: #252c41;
+}
+
+.btn-default{
+	background-color: #f1404b;
+	border-color: #f1404b;
+	color:#f4f5f9;
+}
+
+.btn{
+	background-color: #f1404b;
+	border-color: #f1404b;
+	color:#f4f5f9;
+}
+
+.btn-default:hover, .btn-default:active, .btn-default:active, .btn-default:focus{
+	background-color: #f1404b;
+	border-color: #f1404b;
+	color:#f4f5f9;
 }

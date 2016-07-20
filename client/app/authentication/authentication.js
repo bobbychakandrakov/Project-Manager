@@ -5,9 +5,9 @@
     .module('projectManager.authentication', [])
     .controller('AuthenticationController', AuthenticationController);
 
-  AuthenticationController.$inject = ['$scope','authenticationService'];
+  AuthenticationController.$inject = ['$scope','authenticationService', '$location'];
 
-  function AuthenticationController($scope,authenticationService){
+  function AuthenticationController($scope, authenticationService, $location){
 
     $scope.loginUser = {
       password:'',
@@ -28,7 +28,7 @@
     function login() {
       console.log($scope.loginUser);
       authenticationService.login($scope.loginUser).then(function (data) {
-        console.log(data);
+        $location.path('/dashboard');
       },function (err) {
         console.log(err);
       });

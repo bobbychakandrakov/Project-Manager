@@ -49,7 +49,14 @@
 	-moz-box-shadow: none;
 	box-shadow: none;
 	border-color: #ccc;
+
 }
+
+.panel-login input:focus {
+	background: #f46f78;
+	color: #252c41;
+}
+
 .btn-login {
 	background-color: #f4f5f9;
 	outline: none;
@@ -166,4 +173,13 @@
 	background-color: #f1404b;
 	border-color: #f1404b;
 	color:#f4f5f9;
+}
+
+/*input.ng-invalid.ng-dirty.form-validation:focus {*/
+	/*background: #f46f78;*/
+	/*color: #f4f5f9;*/
+/*}*/
+
+input.ng-valid.form-validation {
+	background: #f4f5f9;
 }

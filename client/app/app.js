@@ -56,12 +56,12 @@
         }
       });
       $rootScope.$on('$routeChangeError',function (event , next , current) {
-        // if (authenticationService.getCurrentUser()) {
-        //   $location.path('/dashboard');
-        // }
-        // else{
-        //   $location.path('/');
-        // }
+        if (authenticationService.getCurrentUser()) {
+          $location.path('/dashboard');
+        }
+        else{
+          $location.path('/');
+        }
       });
     }
   });

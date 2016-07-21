@@ -45,7 +45,7 @@
     }
     function logout() {
       authenticationService.logout();
-      toastr.success("Successful logout!");
+      toastr.success('Goodbye!');
     }
   }
 

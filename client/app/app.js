@@ -24,7 +24,47 @@
   })
   .value('toastr', toastr)
   .constant('BASE_URL','http://localhost:7777/api')
-  .constant('CONTENT_TYPE', 'application/x-www-form-urlencoded; charset=UTF-8');
+  .constant('CONTENT_TYPE', 'application/x-www-form-urlencoded; charset=UTF-8')
+
+  .run(function ($rootScope, $location, authenticationService) {
+    var requestedLocation = $location.path();
+    authenticationService.checkProfile().then(function functionName() {
+      if (requestedLocation === '/' && authenticationService.getCurrentUser()) {
+        $location.path('/dashboard');
+      }
+      else if(requestedLocation !== '/' && !authenticationService.getCurrentUser()){
+        $location.path('/');
+      }
+      init();
+    },function () {
+      if (requestedLocation === '/' && authenticationService.getCurrentUser()) {
+        $location.path('/dashboard');
+      }
+      else if(requestedLocation !== '/' && !authenticationService.getCurrentUser()){
+        $location.path('/');
+      }
+      init();
+    });
+
+    function init() {
+      $rootScope.$on('$locationChangeStart',function (event , next , current) {
+        if ($location.path() === '/' && authenticationService.getCurrentUser()) {
+          $location.path('/dashboard');
+        }
+        else if($location.path() !== '/' && !authenticationService.getCurrentUser()){
+          $location.path('/');
+        }
+      });
+      $rootScope.$on('$routeChangeError',function (event , next , current) {
+        // if (authenticationService.getCurrentUser()) {
+        //   $location.path('/dashboard');
+        // }
+        // else{
+        //   $location.path('/');
+        // }
+      });
+    }
+  });
 
   toastr.options = {
     closeButton: false,

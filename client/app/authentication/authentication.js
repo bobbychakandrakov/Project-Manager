@@ -7,12 +7,25 @@
 
     AuthenticationController.$inject = ['$scope', 'authenticationService', '$location', 'toastr', '$route'];
 
+<<<<<<< HEAD
     function AuthenticationController($scope, authenticationService, $location, toastr, $route) {
 
         $scope.loginUser = {
             password: '',
             email: ''
         };
+=======
+  function AuthenticationController($scope, authenticationService, $location, toastr){
+    authenticationService.checkProfile().then(function () {
+      $location.path('/dashboard');
+    },function () {
+
+    });
+    $scope.loginUser = {
+      password:'',
+      email:''
+    };
+>>>>>>> 8c90d3662adb956fd378848836b6b895520f5dac
 
         $scope.registerUser = {
             name: '',

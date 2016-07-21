@@ -11,11 +11,21 @@
       });
     });
 
-  EditProfileController.$inject = ['$scope'];
+  EditProfileController.$inject = ['$scope','editProfileService'];
 
-  function EditProfileController($scope){
+  function EditProfileController($scope, editProfileService){
 
-    $scope.name = 'Boyan';
+    $scope.update = update;
+
+
+    function update() {
+      editProfileService.update({name:'genadi_genov',email:'genadi98@abv.bg',position:'Front-End',oldPassword:'123456',newPassword:'123456789'})
+                        .then(function (data) {
+                          console.log(data);
+                        },function (err) {
+                          console.log(err);
+                        });
+    }
 
   }
 

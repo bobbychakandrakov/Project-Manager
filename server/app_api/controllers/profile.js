@@ -38,7 +38,7 @@ module.exports.updateProfile = function(req, res) {
 
 
           if((user.validPassword(req.body.oldPassword))===true){
-              user.setPassword(req.body.newPassword || req.body.oldPassword)
+              user.setPassword(req.body.newPassword || req.body.oldPassword);
               user.name = req.body.name || user.name;
               user.email = req.body.email || user.email;
               user.position = req.body.position || user.position;

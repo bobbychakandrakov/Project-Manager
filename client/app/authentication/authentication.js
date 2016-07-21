@@ -8,7 +8,11 @@
   AuthenticationController.$inject = ['$scope','authenticationService', '$location','toastr'];
 
   function AuthenticationController($scope, authenticationService, $location, toastr){
+    authenticationService.checkProfile().then(function () {
+      $location.path('/dashboard');
+    },function () {
 
+    });
     $scope.loginUser = {
       password:'',
       email:''

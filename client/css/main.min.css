@@ -175,11 +175,27 @@
 	color:#f4f5f9;
 }
 
-/*input.ng-invalid.ng-dirty.form-validation:focus {*/
-	/*background: #f46f78;*/
-	/*color: #f4f5f9;*/
-/*}*/
+input.ng-invalid.ng-touched, input.ng-invalid.ng-invalid-name {
+	background: #f46f78;
+	color: #f4f5f9;
+}
 
 input.ng-valid.form-validation {
 	background: #f4f5f9;
+}
+
+.validation-invalid {
+	color: #f1404b;
+}
+
+.validation-valid {
+	display: none;
+}
+
+.profile-update {
+	margin-top: 10%;
+}
+.form-control:focus {
+	border-color: #f1404b;
+	box-shadow: inset 0 1px 1px #f1404b, 0 0 8px #f4f5f9;
 }

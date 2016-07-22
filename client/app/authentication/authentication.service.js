@@ -75,7 +75,7 @@
                     'Content-Type': CONTENT_TYPE,
                     'Authorization': 'Bearer ' + token
                 },
-                url: BASE_URL + '/profile',
+                url: BASE_URL + '/profile'
             }).success(function (data) {
                 currentUser = true;
                 deffered.resolve();

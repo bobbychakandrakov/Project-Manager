@@ -5,6 +5,8 @@
     'ngRoute',
     'ipCookie',
     'ngStorage',
+    'validation',
+    'validation.rule',
     'projectManager.authentication',
     'projectManager.dashboard',
     'projectManager.editProfile'

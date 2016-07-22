@@ -23,6 +23,8 @@
     "jquery": "^3.1.0",
     "toastr": "^2.1.2",
     "angular-cookie": "^4.1.0",
-    "ngstorage": "^0.3.10"
+    "ngstorage": "^0.3.10",
+    "angular-cookies": "^1.5.7",
+    "angular-validation": "^1.4.1"
   }
 }

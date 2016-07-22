@@ -3,7 +3,8 @@
 
   angular.module('projectManager', [
     'ngRoute',
-    'ngCookies',
+    'ipCookie',
+    'ngStorage',
     'projectManager.authentication',
     'projectManager.dashboard',
     'projectManager.editProfile'
@@ -28,7 +29,7 @@
 
   .run(function ($rootScope, $location, authenticationService) {
     var requestedLocation = $location.path();
-    authenticationService.checkProfile().then(function functionName() {
+    authenticationService.checkProfile().then(function () {
       if (requestedLocation === '/' && authenticationService.getCurrentUser()) {
         $location.path('/dashboard');
       }

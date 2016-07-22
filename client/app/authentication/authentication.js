@@ -23,7 +23,8 @@
 
         $scope.loginUser = {
           password:'',
-          email:''
+          email:'',
+          remember:false
         };
 
         $scope.registerUser = {
@@ -38,6 +39,7 @@
         $scope.register = register;
 
         function login(LoginForm) {
+          console.log($scope.loginUser);
           console.log(LoginForm.$valid);
             if (LoginForm.$valid) {
                 authenticationService.login($scope.loginUser).then(function (data) {
@@ -58,7 +60,8 @@
                 authenticationService.register($scope.registerUser).then(function (data) {
                     console.log(data);
                     toastr["success"]("Success!");
-                    $route.reload();
+                    toastr.success('Welcome!');
+                    $location.path('/dashboard');
                 }, function (err) {
                     console.log(err);
                 });
@@ -67,6 +70,8 @@
                 toastr["error"]("Register Failed!");
             }
         }
+
+        /////////////////////////////////////////////
 
         $('#login-form-link').click(function (e) {
             $("#login-form").delay(100).fadeIn(100);

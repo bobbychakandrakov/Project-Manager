@@ -16,11 +16,16 @@
   function EditProfileController($scope, editProfileService){
 
     $scope.update = update;
-
+    editProfileService.getCurrentProfile().then(function (data) {
+      console.log(data);
+      $scope.user = data;
+    },function (err) {
+      console.log(err);
+    });
 
     function update() {
-      editProfileService.update({name:'genadi_genov',email:'genadi98@abv.bg',position:'Front-End',oldPassword:'123456',newPassword:'123456789'})
-                        .then(function (data) {
+      console.log($scope.user);
+      editProfileService.update($scope.user).then(function (data) {
                           console.log(data);
                         },function (err) {
                           console.log(err);

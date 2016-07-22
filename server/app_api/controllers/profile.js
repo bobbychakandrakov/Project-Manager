@@ -7,10 +7,10 @@ var sendJSONresponse = function(res, status, content) {
 };
 
 var validateEmail= function (email) {
-    if (email.length == 0) return false;
+    if (email.length === 0) return false;
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
     return re.test(email);
-}
+};
 
 module.exports.profileRead = function(req, res) {
 
@@ -22,7 +22,12 @@ module.exports.profileRead = function(req, res) {
     User
       .findById(req.payload._id)
       .exec(function(err, user) {
-        res.status(200).json(user);
+        res.status(200).json({
+          _id:user._id,
+          name:user.name,
+          position:user.position,
+          email:user.email
+        });
       });
   }
 
@@ -163,7 +168,7 @@ module.exports.updateProfile = function(req, res) {
                             });
                         }else{
                             if((user.validPassword(req.body.oldPassword))===true){
-                                user.setPassword(req.body.newPassword || req.body.oldPassword)
+                                user.setPassword(req.body.newPassword || req.body.oldPassword);
                                 user.name = req.body.name || user.name;
                                 user.email = req.body.email || user.email;
                                 user.position = req.body.position || user.position;

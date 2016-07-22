@@ -5,9 +5,9 @@
         .module('projectManager.authentication')
         .factory('authenticationService', authenticationService);
 
-    authenticationService.$inject = ['$http', 'BASE_URL', 'CONTENT_TYPE', '$rootScope', '$cookies'];
+    authenticationService.$inject = ['$http', 'BASE_URL', 'CONTENT_TYPE', 'ipCookie', '$sessionStorage', '$q'];
 
-    function authenticationService($http, BASE_URL , CONTENT_TYPE, $rootScope, $cookies) {
+    function authenticationService($http, BASE_URL , CONTENT_TYPE, ipCookie, $sessionStorage, $q) {
         var currentUser = false;
         var service = {
             login: login,
@@ -29,7 +29,10 @@
                 data: 'email=' + credentials.email + '&password=' + credentials.password
             }).success(function (data) {
                 currentUser = true;
-                $cookies.put('token',data.token);
+                if (credentials.remember) {
+                  ipCookie('token',data.token, {expires: 30});
+                }
+                $sessionStorage.token = data.token;
             }).error(function (err) {
                 console.log(err);
             });
@@ -45,32 +48,43 @@
                 data: 'name=' + credentials.name + '&position=' + credentials.position + '&email=' + credentials.email +
                     '&password=' + credentials.password
             }).success(function (data) {
-                console.log(data);
-                console.log("Successfully registered!");
+              currentUser = true;
+              ipCookie('token',data.token, {expires: 30});
             }).error(function (err) {
                 console.log(err);
             });
         }
 
         function logout() {
-          $cookies.remove('token');
+          ipCookie.remove('token');
+          $sessionStorage.$reset();
           currentUser = false;
           console.log('Logout success!');
         }
 
         function checkProfile() {
-          return $http({
-              method: 'GET',
-              headers: {
-                  'Content-Type': CONTENT_TYPE,
-                  'Authorization': 'Bearer ' + $cookies.get('token')
-              },
-              url: BASE_URL + '/profile',
-          }).success(function (data) {
-              currentUser = true;
-          }).error(function (err) {
-              console.log(err);
-          });
+          var deffered = $q.defer();
+          var token = ipCookie('token') || $sessionStorage.token;
+          if (!token) {
+            deffered.reject();
+          }
+          else{
+            $http({
+                method: 'GET',
+                headers: {
+                    'Content-Type': CONTENT_TYPE,
+                    'Authorization': 'Bearer ' + token
+                },
+                url: BASE_URL + '/profile',
+            }).success(function (data) {
+                currentUser = true;
+                deffered.resolve();
+            }).error(function (err) {
+                console.log(err);
+                deffered.reject();
+            });
+          }
+          return deffered.promise;
         }
 
         function getCurrentUser() {

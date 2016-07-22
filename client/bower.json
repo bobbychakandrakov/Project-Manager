@@ -21,7 +21,8 @@
     "semantic": "semantic-ui#^2.2.2",
     "angular-semantic-ui": "^0.0.3",
     "jquery": "^3.1.0",
-    "angular-cookies": "^1.5.7",
-    "toastr": "^2.1.2"
+    "toastr": "^2.1.2",
+    "angular-cookie": "^4.1.0",
+    "ngstorage": "^0.3.10"
   }
 }

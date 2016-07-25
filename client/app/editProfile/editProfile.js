@@ -11,9 +11,9 @@
             });
         });
 
-    EditProfileController.$inject = ['$scope', 'editProfileService'];
+    EditProfileController.$inject = ['$scope', 'editProfileService', '$location'];
 
-    function EditProfileController($scope, editProfileService) {
+    function EditProfileController($scope, editProfileService, $location) {
 
         $scope.update = update;
         editProfileService.getCurrentProfile().then(function (data) {
@@ -29,6 +29,7 @@
                 console.log($scope.user);
                 editProfileService.update($scope.user).then(function (data) {
                     console.log(data);
+                    $location.path('/dashboard')
                     toastr.info('Profile Successfully updated!');
                 }, function (err) {
                     console.log(err);

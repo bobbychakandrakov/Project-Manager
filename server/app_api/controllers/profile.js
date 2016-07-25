@@ -7,10 +7,10 @@ var sendJSONresponse = function(res, status, content) {
 };
 
 var validateEmail= function (email) {
-    if (email.length === 0) return false;
+    if (email.length == 0) return false;
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
     return re.test(email);
-};
+}
 
 module.exports.profileRead = function(req, res) {
 
@@ -22,12 +22,7 @@ module.exports.profileRead = function(req, res) {
     User
       .findById(req.payload._id)
       .exec(function(err, user) {
-        res.status(200).json({
-          _id:user._id,
-          name:user.name,
-          position:user.position,
-          email:user.email
-        });
+        res.status(200).json(user);
       });
   }
 
@@ -143,58 +138,31 @@ module.exports.updateProfile = function(req, res) {
             }
 
 
-            User.findOne({ name:req.body.name}, function (err, name){
-                if(err){
-                    sendJSONresponse(res, 400, {
-                        "message": err
-                    });
-                }
+            if((user.validPassword(req.body.oldPassword))===true){
+                user.setPassword(req.body.newPassword || req.body.oldPassword)
+                user.name = req.body.name || user.name;
+                user.email = req.body.email || user.email;
+                user.position = req.body.position || user.position;
 
-                if(name){
-                    sendJSONresponse(res, 400, {
-                        "message": "name exist"
-                    });
-                }else{
-                    User.findOne({email: req.body.email }, function (err, email) {
-                        if(err){
-                            sendJSONresponse(res, 400, {
-                                "message": err
-                            });
-                        }
+                user.save(function(err) {
+                    if (err){
+                        res.status(400).json(err);
+                    }else{
+                        var token;
+                        token = user.generateJwt();
+                        res.status(200);
+                        res.json({
+                            "token" : token
+                        });
+                    }
 
-                        if(email){
-                            sendJSONresponse(res, 400, {
-                                "message": "email exist"
-                            });
-                        }else{
-                            if((user.validPassword(req.body.oldPassword))===true){
-                                user.setPassword(req.body.newPassword || req.body.oldPassword);
-                                user.name = req.body.name || user.name;
-                                user.email = req.body.email || user.email;
-                                user.position = req.body.position || user.position;
+                });
 
-                                user.save(function(err) {
-                                    if (err){
-                                        res.status(400).json(err);
-                                    }else{
-                                        var token;
-                                        token = user.generateJwt();
-                                        res.status(200);
-                                        res.json({
-                                            "token" : token
-                                        });
-                                    }
+            }else{
+                res.status(400).json({error:'password doesnt match'});
+            }
 
-                                });
 
-                            }else{
-                                res.status(400).json({error:'password doesnt match'});
-                            }
-                        }
-                    });
-
-                }
-            });
 
         });
   }

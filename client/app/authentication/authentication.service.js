@@ -35,6 +35,7 @@
                 $sessionStorage.token = data.token;
             }).error(function (err) {
                 console.log(err);
+                toastr.error(err.message);
             });
         }
 
@@ -52,6 +53,7 @@
               ipCookie('token',data.token, {expires: 30});
             }).error(function (err) {
                 console.log(err);
+                toastr.error(err);
             });
         }
 

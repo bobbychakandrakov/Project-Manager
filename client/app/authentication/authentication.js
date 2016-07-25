@@ -40,7 +40,6 @@
 
         function login(LoginForm) {
           console.log($scope.loginUser);
-          console.log(LoginForm.$valid);
             if (LoginForm.$valid) {
                 authenticationService.login($scope.loginUser).then(function (data) {
                     toastr.success('Welcome!');
@@ -64,6 +63,7 @@
                     $location.path('/dashboard');
                 }, function (err) {
                     console.log(err);
+                    toastr.error(err);
                 });
             }
             else {

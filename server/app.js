@@ -4,40 +4,53 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-// Require Passport
 var passport = require('passport');
-
-
+var http = require('http');
+var app = express();
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+var nodemailer = require('nodemailer');
 require('./app_api/models/db');
 require('./app_api/config/passport');
-
-
-
+var Message = require('./app_api/models/messages');
+var Project = require('./app_api/models/projects');
+var User = require('./app_api/models/users');
+var Conversation = require('./app_api/models/conversation');
 var routesApi = require('./app_api/routes/index');
+var transporter = nodemailer.createTransport('smtps://eaglemanager.stanga@gmail.com:eaglemanager123456@smtp.gmail.com');
+var mailOptions;
 
-var app = express();
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(express.static(path.join(__dirname, 'app_client')));
+app.use(express.static(path.join(__dirname, '../client')));
 
 
 app.use(passport.initialize());
+
+app.all("/api/*", function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+    return next();
+});
 
 
 app.use('/api', routesApi);
 
 app.use(function(req, res) {
-  res.sendFile(path.join(__dirname, 'app_client', 'index.html'));
+    res.render('index');
 });
 
 
@@ -51,11 +64,13 @@ app.use(function(req, res, next) {
 // error handlers
 
 //  Catch unauthorised errors
-app.use(function (err, req, res, next) {
-  if (err.name === 'UnauthorizedError') {
-    res.status(401);
-    res.json({"message" : err.name + ": " + err.message});
-  }
+app.use(function(err, req, res, next) {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401);
+        res.json({
+            "message": err.name + ": " + err.message
+        });
+    }
 });
 
 // development error handler
@@ -80,13 +95,86 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.all("/api/*", function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST,Delete");
-    return next();
+
+module.exports = server;
+server.listen(3000, function() {
+    console.log('Server running ...');
 });
-module.exports = app;
-app.listen(7777, function () {
-    console.log(' app listening on port 7777!');
+/**
+ * listeners for chat and notifications
+ */
+io.sockets.on('connection', function(socket) {
+    console.log("user connected!");
+
+    socket.on('subscribe', function(conversation) {
+        console.log('joining conversation');
+        socket.join(conversation);
+    });
+
+    socket.on('unsubscribe', function(conversation) {
+        console.log('leaving conversation');
+        socket.leave(conversation);
+    });
+
+    socket.on('send', function(data) {
+        var message = new Message();
+        message.conversationId = data.conversationId;
+        message.body = data.body;
+        message.author = data.author;
+
+        message.save(function(err, message) {
+            console.log('Message saved!');
+            socket.to(data.conversationId).emit('send', message);
+        });
+
+    });
+    socket.on('disconnect', function() {
+        console.log('user disconnected');
+
+    });
+    socket.on('notification', function(data) {
+        Conversation.findOne({
+            projectId: data.projectId
+        }, function(err, con) {
+            User.find({
+                _id: {
+                    $in: con.participants
+                },
+                position: data.keyword
+            }, function(err, users) {
+                socket.to(data.conversationId).emit('notification ' + data.projectId, {
+                    users: users,
+                    conversationId: con._id,
+                    message: data.body,
+                    position: data.keyword
+                });
+                var receivers = [];
+                users.forEach(function(user) {
+                    receivers.push(user.email);
+                });
+
+
+
+                mailOptions = {
+                    from: '"Eager Manager" <eaglemanager.stanga@gmail.com>', // sender address
+                    to: receivers, // list of receivers
+                    subject: 'New message in conversation: ' + data.conversationName, // Subject line
+                    html: '<div style="text-align:center;font-size:50px"><i>' + data.author + '</i><b>' + ' said: ' + data.body + '</b></div>' // html body
+                };
+
+
+                transporter.sendMail(mailOptions, function(error, info) {
+                    if (error) {
+
+                        return console.log(error);
+                    }
+                    console.log('Message sent: ' + info.response);
+                });
+
+            });
+
+        });
+
+    });
+
 });

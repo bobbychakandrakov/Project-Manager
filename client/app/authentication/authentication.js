@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     angular
@@ -9,22 +9,11 @@
 
     function AuthenticationController($scope, authenticationService, $location, toastr, $route) {
 
+        // Initializing the scope models
         $scope.loginUser = {
             password: '',
-            email: ''
-        };
-
-        authenticationService.checkProfile().then(function () {
-          $location.path('/dashboard');
-        },function () {
-
-        });
-
-
-        $scope.loginUser = {
-          password:'',
-          email:'',
-          remember:false
+            email: '',
+            remember: false
         };
 
         $scope.registerUser = {
@@ -34,53 +23,63 @@
             email: ''
         };
 
+        // Hooking scope with the controller functions
         $scope.login = login;
-
         $scope.register = register;
 
         function login(LoginForm) {
-          console.log($scope.loginUser);
+            // Checking if login form is filled correct
             if (LoginForm.$valid) {
-                authenticationService.login($scope.loginUser).then(function (data) {
+                // Making an API call through the service
+                authenticationService.login($scope.loginUser).then(function(user) {
+                    // Login success , showing welcome message and redirection to dashboard page
                     toastr.success('Welcome!');
                     $location.path('/dashboard');
-                }, function (err) {
-                    console.log(err);
+                }, function(err) {
+                    // Showing the error from the API call
+                    toastr.error('User not found');
                 });
-            }
-            else {
-                toastr["error"]("Login Failed!");
+            } else {
+                // Showing message if form is not filled correct
+                toastr.error("Login Failed!");
             }
         }
 
         function register(RegisterForm) {
+            // Checking if registration form is filled correct
             if (RegisterForm.$valid) {
-                console.log($scope.registerUser);
-                authenticationService.register($scope.registerUser).then(function (data) {
-                    console.log(data);
-                    toastr["success"]("Success!");
-                    toastr.success('Welcome!');
-                    $location.path('/dashboard');
-                }, function (err) {
-                    console.log(err);
-                    toastr.error(err);
-                });
-            }
-            else {
-                toastr["error"]("Register Failed!");
+                // Checking for password match
+                if ($scope.registerUser.passwordConfirm === $scope.registerUser.password) {
+                    // Making an API call through the service
+                    authenticationService.register($scope.registerUser).then(function(data) {
+                        // Registration success , showing welcome message and redirection to dashboard page
+                        toastr.success('Welcome!');
+                        $location.path('/dashboard');
+                    }, function(err) {
+                        // Showing the error from the API call
+                        toastr.error(err);
+                    });
+                } else {
+                    // Showing message if passwords not match
+                    toastr.error('Passwords does not match!');
+                }
+            } else {
+                // Showing message if form is not filled correct
+                toastr.error("Register Failed!");
             }
         }
 
         /////////////////////////////////////////////
 
-        $('#login-form-link').click(function (e) {
+        // jQuery code to make switching login and register panels
+        $('#login-form-link').click(function(e) {
             $("#login-form").delay(100).fadeIn(100);
             $("#register-form").fadeOut(100);
             $('#register-form-link').removeClass('active');
             $(this).addClass('active');
             e.preventDefault();
         });
-        $('#register-form-link').click(function (e) {
+        $('#register-form-link').click(function(e) {
             $("#register-form").delay(100).fadeIn(100);
             $("#login-form").fadeOut(100);
             $('#login-form-link').removeClass('active');

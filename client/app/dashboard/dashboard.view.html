@@ -1,3 +1,24 @@
-<p>
-  In Dashboard!
-</p>
+<div class="container row profile-update">
+  <legend class="text-center">Dashboard</legend>
+
+          <div class="col-md-12">
+            <div class="form-group col-md-4">
+              <label for="sel1">Sort by:</label>
+              <select class="form-control" ng-model="sortOwner" ng-change="changeRole()">
+                <option value="" disabled selected>Select your option</option>
+                <option value="title" ng-selected="title" >Title</option>
+                <option value="-createdAt" ng-selected="date">Date</option>
+              </select>
+
+            </div>
+          </div>
+            <ul ui-sortable="sortableOptions" ng-model="projects">
+              <div class="col-md-4 equal" ng-repeat="project in projects">
+                <chat title="project.title" description="project.description" id="project._id" role="project.position" admins="project.adminUsers" developers="project.standardUsers"></chat>
+              </div>
+            </ul>
+                  <div class="col-md-12 text-center center-block" ng-show="projectsLen > 6">
+            <uib-pagination total-items="projectsLen" ng-model="currentPageOwner" items-per-page="pageSize"
+                            class="pagination" boundary-links="true" first-text="«" last-text="»" direction-links="false" ng-click="changePage()"></uib-pagination>
+        </div>
+</div>

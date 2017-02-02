@@ -4,10 +4,8 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="name">Full name:</label>
             <div class="col-sm-10">
-                <!--<input type="text" class="form-control" id="name" placeholder="Full name" ng-model="user.name"-->
-                <!--validator="required" required-error-message="Please enter Full Name" minlength="5">-->
                 <input type="text" name="name" required="required" id="name" tabindex="1"
-                       class="form-control form-validation" placeholder="Full name" value=""
+                       class="form-control" placeholder="Full name" value=""
                        ng-model="user.name" validator="required" required-error-message="Please enter Full Name"
                        minlength="5">
             </div>
@@ -23,20 +21,32 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="password-old">Password:</label>
             <div class="col-sm-10">
-                <input type="password" class="form-control form-validation" id="password-old" placeholder="Password"
-                       ng-model="user.oldPassword" required="required" minlength="6" validator="required"
-                       required-error-message="Please enter your password">
+                <input id="password-old"
+                       class="form-control form-validation"
+                       type="password"
+                       data-toggle="password"
+                       placeholder="Password"
+                       ng-model="user.oldPassword"
+                       required="required"
+                       minlength="6">
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-sm-2" for="password-new">New-password:</label>
             <div class="col-sm-10">
-                <!--<input type="password" class="form-control form-validation" id="password-new" placeholder="New password"-->
-                       <!--ng-model="user.newPassword" required="required" minlength="6" validator="required"-->
-                       <!--required-error-message="Please enter new password">-->
-                <input type="password" name="password" id="password-new" class="form-control form-validation" required="required" minlength="6" id="password" tabindex="3"
-                       class="form-control form-validation" placeholder="Password" ng-model="user.newPassword"
-                       validator="required" required-error-message="Please enter password">
+                <input type="password" name="password" id="password-new" class="form-control" minlength="6"
+                       tabindex="3"
+                       class="form-control form-validation" placeholder="New-password" ng-model="user.newPassword"
+                       required-error-message="Please enter password">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="password-new">Confirm New-password:</label>
+            <div class="col-sm-10">
+                <input type="password" name="password" id="password-new-confirm" class="form-control" minlength="6"
+                       tabindex="4"
+                       class="form-control form-validation" placeholder="Confirm New-password" ng-model="user.newPasswordConfirm"
+                       required-error-message="Please enter password">
             </div>
         </div>
         <div class="form-group">
@@ -59,4 +69,18 @@
             </div>
         </div>
     </form>
+    <script>
+        $(function () {
+            $('#password-old').password().on('show.bs.password',function (e) {
+                $('#eventLog').text('On show event');
+                $('#methods').prop('checked', true);
+            }).on('hide.bs.password', function (e) {
+                $('#eventLog').text('On hide event');
+                $('#methods').prop('checked', false);
+            });
+            $('#methods').click(function () {
+                $('#password-old').password('toggle');
+            });
+        });
+    </script>
 </div>
